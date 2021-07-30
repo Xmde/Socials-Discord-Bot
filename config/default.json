@@ -1,0 +1,10 @@
+{
+  "YTAPIKey": "",
+  "TwitchClientSecret": "",
+  "TwitchClientId": "",
+  "BotToken": "",
+  "YTChannels": "./channels/youtube.txt",
+  "TwitchChannels": "./channels/twitch.txt",
+  "NotifChannel": "",
+  "NotifRole": ""
+}

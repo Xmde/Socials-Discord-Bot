@@ -1,0 +1,19 @@
+{
+  "name": "Upload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.3.6",
+    "discord.js": "^12.5.3",
+    "googleapis": "^82.0.0",
+    "node-twitch": "^0.4.5",
+    "winston": "^3.3.3"
+  }
+}
