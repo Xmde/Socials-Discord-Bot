@@ -1,37 +1,82 @@
+// const TwitchApi = require('node-twitch').default;
+// const config = require('config');
+// const fileparser = require('../util/fileparser');
+// const { notifEmitter } = require('../events/emitters');
+// const winston = require('winston');
+
+// const twitch = new TwitchApi({
+//   client_id: config.get('TwitchClientId'),
+//   client_secret: config.get('TwitchClientSecret'),
+// });
+
+// function addTwitchChecker(channelName) {
+//   let liveId;
+//   setInterval(async () => {
+//     let stream = await twitch.getStreams({ channel: channelName });
+//     stream = stream.data[0];
+//     if (!stream) return;
+//     if (stream.id !== liveId) {
+//       winston.info('New Stream Found', stream);
+//       notifEmitter.emit('twitch', stream);
+//       liveId = stream.id;
+//     }
+//   }, 10000);
+// }
+
+// module.exports.twitchChecker = async function () {
+//   const channels = await fileparser(config.get('TwitchChannels'));
+//   for (let ch of channels) {
+//     winston.info('Adding Twitch Channel: ' + ch);
+//     addTwitchChecker(ch);
+//   }
+// };
+
+// module.exports.getPFP = async function (channelId) {
+//   const profile = await twitch.getUsers(channelId);
+//   return profile.data[0].profile_image_url;
+// };
+
+const NotifApiHandle = require('./notif');
 const TwitchApi = require('node-twitch').default;
 const config = require('config');
-const fileparser = require('../util/fileparser');
-const { videoEmitter } = require('../events/emitters');
+const { notifEmitter } = require('../events/emitters');
 const winston = require('winston');
 
-const twitch = new TwitchApi({
-  client_id: config.get('TwitchClientId'),
-  client_secret: config.get('TwitchClientSecret'),
-});
+module.exports = class TwitchApiHandle extends NotifApiHandle {
+  #twitch;
+  constructor(id, channelId) {
+    super(id, channelId);
 
-function addTwitchChecker(channelName) {
-  let liveId;
-  setInterval(async () => {
-    let stream = await twitch.getStreams({ channel: channelName });
-    stream = stream.data[0];
-    if (!stream) return;
-    if (stream.id !== liveId) {
-      winston.info('New Stream Found', stream);
-      videoEmitter.emit('twitch', stream);
-      liveId = stream.id;
-    }
-  }, 10000);
-}
+    this.#twitch = new TwitchApi({
+      client_id: config.get('TwitchClientId'),
+      client_secret: config.get('TwitchClientSecret'),
+    });
 
-module.exports.twitchChecker = async function () {
-  const channels = await fileparser(config.get('TwitchChannels'));
-  for (let ch of channels) {
-    winston.info('Adding Twitch Channel: ' + ch);
-    addTwitchChecker(ch);
+    winston.info(`New TwitchApiHandle Registered: ID(${id})`);
   }
-};
-
-module.exports.getPFP = async function (channelId) {
-  const profile = await twitch.getUsers(channelId);
-  return profile.data[0].profile_image_url;
+  addChecker(interval) {
+    winston.info(
+      `Regestering new TwitchChecker: ID(${this.#id}), Interval(${interval})`
+    );
+    setInterval(async () => {
+      let stream = await this.#twitch.getStreams({ channel: this.#id });
+      stream = stream.data[0];
+      if (!stream) return;
+      if (stream.id !== this.#lastNotif) {
+        winston.info(`New Stream Found: Stream${stream}`);
+        notifEmitter.emit('twitch', {
+          video: stream,
+          discordChannel: this.#channelId,
+        });
+        this.#lastNotif = stream.id;
+      }
+    }, interval);
+  }
+  get pfp() {
+    const profile = await this.#twitch.getUsers(this.#id);
+    winston.info(
+      `Found Profile Picture: Url(${profile.data[0].profile_image_url})`
+    );
+    return profile.data[0].profile_image_url;
+  }
 };

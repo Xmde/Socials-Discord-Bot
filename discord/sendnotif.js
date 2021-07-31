@@ -1,11 +1,11 @@
 const Discord = require('discord.js');
-const client = require('./client');
+const { client } = require('./client');
 const config = require('config');
 const getYTPFP = require('../apiHandle/youtube').getPFP;
 const getTwitchPFP = require('../apiHandle/twitch').getPFP;
 const winston = require('winston');
 
-module.exports.sendYoutubeNotif = async function (video) {
+module.exports.sendYoutubeNotif = async function (video, discordChannelId) {
   const user = await getYTPFP(video.snippet.channelId);
 
   const notif = new Discord.MessageEmbed()
@@ -22,13 +22,13 @@ module.exports.sendYoutubeNotif = async function (video) {
     .setTimestamp()
     .setFooter('Provided by Socials (Developed by Xmde)');
 
-  const channel = client.channels.cache.get(config.get('NotifChannel'));
+  const channel = client.channels.cache.get(discordChannelId);
   //channel.send('@everyone', notif);
   winston.info('Sending YT notification to discord');
-  channel.send(`<@&${config.get('NotifRole')}>`, notif);
+  channel.send(`@Notifications`, notif);
 };
 
-module.exports.sendTwitchNotif = async function (stream) {
+module.exports.sendTwitchNotif = async function (stream, discordChannelId) {
   const pfp = await getTwitchPFP(stream.user_id);
 
   const notif = new Discord.MessageEmbed()
@@ -44,8 +44,8 @@ module.exports.sendTwitchNotif = async function (stream) {
     .setTimestamp()
     .setFooter('Provided by Socials (Developed by Xmde)');
 
-  const channel = client.channels.cache.get(config.get('NotifChannel'));
+  const channel = client.channels.cache.get(discordChannelId);
 
   winston.info('Sending Twitch notification to discord');
-  channel.send(`<@&${config.get('NotifRole')}>`, notif);
+  channel.send(`@Notifications`, notif);
 };

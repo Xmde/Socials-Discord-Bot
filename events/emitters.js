@@ -2,6 +2,6 @@ const EventEmitter = require('events');
 
 class MyEmitter extends EventEmitter {}
 
-const videoEmitter = new MyEmitter();
+const notifEmitter = new MyEmitter();
 
-exports.videoEmitter = videoEmitter;
+exports.notifEmitter = notifEmitter;

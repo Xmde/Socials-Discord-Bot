@@ -1,10 +1,10 @@
-const { videoEmitter } = require('./emitters');
+const { notifEmitter } = require('./emitters');
 const config = require('config');
 const fileparser = require('../util/fileparser');
 const { sendTwitchNotif } = require('../discord/sendnotif');
 
 module.exports = function () {
-  videoEmitter.on('twitch', async video => {
-    await sendTwitchNotif(video);
+  notifEmitter.on('twitch', async (notif) => {
+    await sendTwitchNotif(notif.video, notif.discordChannel);
   });
-}
+};
