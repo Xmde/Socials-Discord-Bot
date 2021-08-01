@@ -1,10 +1,10 @@
 {
-  "name": "Upload",
-  "version": "1.0.0",
+  "name": "socials",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "set NODE_ENV=production&& node index.js"
   },
   "keywords": [],
   "author": "",
