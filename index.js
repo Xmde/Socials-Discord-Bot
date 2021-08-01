@@ -7,6 +7,11 @@
 //   require('./apiHandle/twitch').twitchChecker();
 // });
 
+exports.youtubeChannels = youtubeChannels = [];
+exports.twitchChannels = twitchChannels = [];
+
 require('./init/logging');
+
 require('./discord/client');
 require('./discord/addnotifs');
+require('./events/youtube')();
