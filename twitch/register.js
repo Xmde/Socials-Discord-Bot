@@ -20,9 +20,10 @@ exports.twitchUnregister = function (username, discordChannelId) {
       `[Twitch] Unregistering Channel: Username(${username}), DiscordChannelID(${discordChannelId})`
     )
   );
-  const index = discordChannels.findIndex((val) => {
-    val.username === username && val.discordChannelId === discordChannelId;
-  });
+  const index = discordChannels.findIndex(
+    (val) =>
+      val.username == username && val.discordChannelId == discordChannelId
+  );
   if (index === -1) {
     console.log(
       chalk.magenta(

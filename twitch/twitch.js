@@ -31,6 +31,7 @@ exports.init = function () {
     for (let stream of streams) {
       let channel = channels.find((val) => val.username === stream.user_name);
       if (channel.lastStream !== stream.id) {
+        channel.lastStream = stream.id;
         console.log(
           chalk.magenta(
             `[Twitch] Found new stream: ID(${stream.id}), Username(${stream.user_name})`
