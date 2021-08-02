@@ -1,3 +1,4 @@
 node_modules/
 .VSCodeCounter/
 config/development.json
+uncaughtExceptions.log
