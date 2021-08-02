@@ -2,13 +2,10 @@ const { getStreams } = require('./apiHandle');
 const sendNotif = require('./sendnotif');
 const chalk = require('chalk');
 
-let discordChannels = [];
-let channels = [];
-
-exports.discordChannels = discordChannels;
-exports.channels = channels;
+const db = require('../startup/db');
 
 exports.getTwitchInfo = function (discordChannelId) {
+  const discordChannels = db.getData('/twitch/discordChannels');
   return discordChannels.filter(
     (elm) => elm.discordChannelId === discordChannelId
   );
@@ -17,6 +14,8 @@ exports.getTwitchInfo = function (discordChannelId) {
 exports.init = function () {
   setInterval(async () => {
     console.log(chalk.magenta('[Twitch] Checking for new streams'));
+    const channels = db.getData('/twitch/channels');
+    const discordChannels = db.getData('/twitch/discordChannels');
     let ch = [...channels];
     let streams = [];
     while (ch.length) {
@@ -29,9 +28,11 @@ exports.init = function () {
     }
     if (streams.length === 0) return;
     for (let stream of streams) {
-      let channel = channels.find((val) => val.username === stream.user_name);
-      if (channel.lastStream !== stream.id) {
-        channel.lastStream = stream.id;
+      let index = channels.findIndex(
+        (val) => val.username === stream.user_name
+      );
+      if (channels[index].lastStream !== stream.id) {
+        db.push(`/twitch/channels[${index}]/lastStream`, stream.id, true);
         console.log(
           chalk.magenta(
             `[Twitch] Found new stream: ID(${stream.id}), Username(${stream.user_name})`

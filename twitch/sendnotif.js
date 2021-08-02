@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const client = require('../discord/client');
-const config = require('config');
 const { getPfp } = require('./apiHandle');
-const { notificationRoles } = require('../discord/data');
+const db = require('../startup/db');
 
 module.exports = async function (stream, discordChannelId) {
   const pfp = await getPfp(stream.user_id);
@@ -21,6 +20,7 @@ module.exports = async function (stream, discordChannelId) {
     .setFooter('Provided by Socials (Developed by Xmde)');
 
   const channel = client.channels.cache.get(discordChannelId);
+  const notificationRoles = db.getData('/discord/notificationRoles');
   if (notificationRoles.some((val) => val.channel === channel.id)) {
     channel.send(
       `${notificationRoles.find((val) => val.channel === channel.id).role}`,

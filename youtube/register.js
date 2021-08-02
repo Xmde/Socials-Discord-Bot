@@ -1,5 +1,5 @@
 const config = require('config');
-const { channels } = require('./youtube');
+const db = require('../startup/db');
 const { pubSubSubscriber } = require('./pubSubSubscriber');
 const chalk = require('chalk');
 
@@ -11,7 +11,7 @@ exports.ytRegister = function (channelId, discordChannelId) {
       `[Youtube] Registering Channel: ID(${channelId}), DiscordChannelID(${discordChannelId})`
     )
   );
-  channels.push({ channelId, discordChannelId });
+  db.push('/youtube/channels[]', { channelId, discordChannelId }, true);
   const topic =
     'https://www.youtube.com/xml/feeds/videos.xml?channel_id=' + channelId;
   pubSubSubscriber.subscribe(topic, hub, config.get('CallBackUrl'), (err) => {
@@ -25,6 +25,7 @@ exports.ytUnregister = function (channelId, discordChannelId) {
       `[Youtube] Unregistering Channel: ID(${channelId}), DiscordChannelID(${discordChannelId})`
     )
   );
+  let channels = db.getData('/youtube/channels');
   const index = channels.findIndex(
     (val) =>
       channelId === val.channelId && discordChannelId === val.discordChannelId
@@ -37,7 +38,8 @@ exports.ytUnregister = function (channelId, discordChannelId) {
     );
     return -1;
   }
-  channels.splice(index, 1);
+  db.delete(`/youtube/channels[${index}]`);
+  channels = db.getData('/youtube/channels');
   if (!channels.some((val) => val.channelId === channelId)) {
     const topic =
       'https://www.youtube.com/xml/feeds/videos.xml?channel_id=' + channelId;

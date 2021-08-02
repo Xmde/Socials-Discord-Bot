@@ -7,12 +7,12 @@ const sendNotif = require('./sendnotif');
 const convert = require('xml-js');
 const chalk = require('chalk');
 const config = require('config');
-let channels = [];
-exports.channels = channels;
+const db = require('../startup/db');
 
 let lastId;
 
 exports.getYoutubeInfo = function (discordChannelId) {
+  const channels = db.getData('/youtube/channels');
   return channels.filter((elm) => elm.discordChannelId === discordChannelId);
 };
 
@@ -34,6 +34,7 @@ exports.init = function () {
       )
     );
     lastId = id['yt:videoId']._text;
+    const channels = db.getData('/youtube/channels');
     channels.forEach((val) => {
       if (val.channelId === id['yt:channelId']._text) {
         sendNotif(id['yt:videoId']._text, val.discordChannelId);
@@ -42,8 +43,10 @@ exports.init = function () {
   });
 
   setInterval(() => {
+    const channels = db.getData('/youtube/channels');
     for (let i = 0; i < channels.length; i++) {
-      let channel = channels.pop();
+      let channel = db.getData('/youtube/channels[-1]');
+      db.delete('/youtube/channels[-1]');
       register(channel.channelId, channel.discordChannelId);
     }
   }, 1000 * 60 * 60 * 24 * 2);

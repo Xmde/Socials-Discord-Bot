@@ -2,10 +2,10 @@ const client = require('./client');
 const { ytRegister, ytUnregister } = require('../youtube/register');
 const { twitchRegister, twitchUnregister } = require('../twitch/register');
 const config = require('config');
-const { notificationRoles } = require('./data');
 const chalk = require('chalk');
 const { getTwitchInfo } = require('../twitch/twitch');
 const { getYoutubeInfo } = require('../youtube/youtube');
+const db = require('../startup/db');
 
 const prefix = config.get('DiscordPrefix');
 
@@ -63,6 +63,7 @@ module.exports = function () {
       }
     } else if (command === 'role') {
       if (args.length === 2 && args[0].toLowerCase() === 'add') {
+        const notificationRoles = db.getData('/discord/notificationRoles');
         if (
           notificationRoles.some((val) => val.channel === message.channel.id)
         ) {
@@ -79,12 +80,17 @@ module.exports = function () {
         message
           .reply('Role set!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
-        notificationRoles.push({
-          role: args[1],
-          channel: message.channel.id,
-        });
+        db.push(
+          '/discord/notificationRoles[]',
+          {
+            role: args[1],
+            channel: message.channel.id,
+          },
+          true
+        );
       }
       if (args.length === 1 && args[0].toLowerCase() === 'del') {
+        const notificationRoles = db.getData('/discord/notificationRoles');
         if (
           !notificationRoles.some((val) => val.channel === message.channel.id)
         ) {
@@ -93,11 +99,10 @@ module.exports = function () {
             .then((msg) => setTimeout(() => msg.delete(), 5000));
           return;
         }
-        notificationRoles.splice(
-          notificationRoles.findIndex(
+        db.delete(
+          `/discord/notificationRoles[${notificationRoles.findIndex(
             (val) => val.channel === message.channel.id
-          ),
-          1
+          )}]`
         );
         message
           .reply('Notification Role Removed!')
@@ -133,7 +138,7 @@ module.exports = function () {
           )
         );
         const info = getYoutubeInfo(message.channel.id).reduce((acc, elm) => {
-          acc.push(elm.clannelId);
+          acc.push(elm.channelId);
           return acc;
         }, []);
         if (info.length === 0)

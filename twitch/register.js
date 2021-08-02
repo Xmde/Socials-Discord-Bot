@@ -1,7 +1,8 @@
-const { channels, discordChannels } = require('./twitch');
+const db = require('../startup/db');
 const chalk = require('chalk');
 
 exports.twitchRegister = function (username, discordChannelId) {
+  const channels = db.getData('/twitch/channels');
   console.log(
     chalk.magenta(
       `[Twitch] Registering Channel: Username(${username}), DiscordChannelID(${discordChannelId})`
@@ -9,18 +10,19 @@ exports.twitchRegister = function (username, discordChannelId) {
   );
   if (!channels.some((val) => val.username === username)) {
     lastStream = '';
-    channels.push({ username, lastStream });
+    db.push('/twitch/channels[]', { username, lastStream }, true);
   }
-  discordChannels.push({ username, discordChannelId });
+  db.push('/twitch/discordChannels[]', { username, discordChannelId }, true);
 };
 
 exports.twitchUnregister = function (username, discordChannelId) {
+  let discordChannels = db.getData('/twitch/discordChannels');
   console.log(
     chalk.magenta(
       `[Twitch] Unregistering Channel: Username(${username}), DiscordChannelID(${discordChannelId})`
     )
   );
-  const index = discordChannels.findIndex(
+  let index = discordChannels.findIndex(
     (val) =>
       val.username == username && val.discordChannelId == discordChannelId
   );
@@ -32,10 +34,11 @@ exports.twitchUnregister = function (username, discordChannelId) {
     );
     return -1;
   }
-  discordChannels.splice(index, 1);
-  if (!discordChannels.some((val) => val.username === username))
-    channels.splice(
-      channels.findIndex((val) => val.username === username),
-      1
-    );
+  db.delete(`/twitch/discordChannels[${index}]`);
+  discordChannels = db.getData('/twitch/discordChannels');
+  if (!discordChannels.some((val) => val.username === username)) {
+    let channels = db.getData('/twitch/channels');
+    index = channels.findIndex((val) => val.username === username);
+    db.delete(`/twitch/channels[${index}]`);
+  }
 };
