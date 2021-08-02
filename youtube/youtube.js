@@ -6,6 +6,7 @@ const { pubSubSubscriber } = require('./pubSubSubscriber');
 const sendNotif = require('./sendnotif');
 const convert = require('xml-js');
 const chalk = require('chalk');
+const config = require('config');
 let channels = [];
 exports.channels = channels;
 
@@ -16,7 +17,11 @@ exports.getYoutubeInfo = function (discordChannelId) {
 };
 
 exports.init = function () {
-  pubSubSubscriber.listen(1337);
+  pubSubSubscriber.listen(
+    config
+      .get('CallBackUrl')
+      .substring(config.get('CallBackUrl').indexOf(':') + 1)
+  );
 
   pubSubSubscriber.on('feed', (data) => {
     const id = convert.xml2js(data.feed.toString(), { compact: true }).feed
