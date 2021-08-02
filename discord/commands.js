@@ -18,7 +18,7 @@ module.exports = function () {
 
     setTimeout(() => {
       message.delete();
-    }, 1000);
+    }, 250);
 
     if (command === 'youtube') {
       if (args.length === 2 && args[0].toLowerCase() === 'add') {
@@ -65,7 +65,7 @@ module.exports = function () {
           return;
         }
         console.log(
-          chalk.white(
+          chalk.gray(
             `[Info] Notification Role Set: Role(${args[1]}), Channel(${message.channel.id})`
           )
         );
@@ -93,25 +93,43 @@ module.exports = function () {
           .reply('Notification Role Removed!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
         console.log(
-          chalk.white(
+          chalk.gray(
             `[Info] Notification Role Removed: Channel(${message.channel.id})`
           )
         );
       }
     } else if (args.length === 1 && command === 'list') {
       if (args[0].toLowerCase() === 'twitch') {
+        console.log(
+          chalk.gray(
+            `[Info] Checking Watched Twitch Channels: DiscordChannelID(${message.channel.id})`
+          )
+        );
         const info = getTwitchInfo(message.channel.id).reduce((acc, elm) => {
           acc.push(elm.username);
           return acc;
         }, []);
+        if (info.length === 0)
+          return message
+            .reply('No Twitch Channels being watched')
+            .then((msg) => setTimeout(() => msg.delete(), 5000));
         message
           .reply(info.join(' : '))
           .then((msg) => setTimeout(() => msg.delete(), 10000));
       } else if (args[0].toLowerCase() === 'youtube') {
+        console.log(
+          chalk.gray(
+            `[Info] Checking Watched Youtube Channels: DiscordChannelID(${message.channel.id})`
+          )
+        );
         const info = getYoutubeInfo(message.channel.id).reduce((acc, elm) => {
           acc.push(elm.clannelId);
           return acc;
         }, []);
+        if (info.length === 0)
+          return message
+            .reply('No Youtube Channels being watched')
+            .then((msg) => setTimeout(() => msg.delete(), 5000));
         message
           .reply(info.join(' : '))
           .then((msg) => setTimeout(() => msg.delete(), 10000));
