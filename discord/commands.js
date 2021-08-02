@@ -20,6 +20,13 @@ module.exports = function () {
       message.delete();
     }, 250);
 
+    if (!message.member.hasPermission('ADMINISTRATOR')) {
+      message
+        .reply('You do not have permission to perform this command!')
+        .then((msg) => setTimeout(() => msg.delete(), 5000));
+      break;
+    }
+
     if (command === 'youtube') {
       if (args.length === 2 && args[0].toLowerCase() === 'add') {
         message
@@ -72,7 +79,10 @@ module.exports = function () {
         message
           .reply('Role set!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
-        notificationRoles.push({ role: args[1], channel: message.channel.id });
+        notificationRoles.push({
+          role: args[1],
+          channel: message.channel.id,
+        });
       }
       if (args.length === 1 && args[0].toLowerCase() === 'del') {
         if (
