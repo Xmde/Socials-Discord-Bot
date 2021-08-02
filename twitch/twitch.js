@@ -8,6 +8,12 @@ let channels = [];
 exports.discordChannels = discordChannels;
 exports.channels = channels;
 
+exports.getTwitchInfo = function (discordChannelId) {
+  return discordChannels.filter(
+    (elm) => elm.discordChannelId === discordChannelId
+  );
+};
+
 exports.init = function () {
   setInterval(async () => {
     console.log(chalk.magenta('[Twitch] Checking for new streams'));

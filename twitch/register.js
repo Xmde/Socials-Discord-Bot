@@ -1,4 +1,4 @@
-const { channels, discordChannels } = require('./init');
+const { channels, discordChannels } = require('./twitch');
 const chalk = require('chalk');
 
 exports.twitchRegister = function (username, discordChannelId) {

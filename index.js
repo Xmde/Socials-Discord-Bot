@@ -1,3 +1,3 @@
 require('./discord/init')();
-require('./youtube/init').init();
-require('./twitch/init').init();
+require('./youtube/youtube').init();
+require('./twitch/twitch').init();

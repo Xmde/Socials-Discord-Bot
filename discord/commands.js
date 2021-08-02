@@ -4,6 +4,8 @@ const { twitchRegister, twitchUnregister } = require('../twitch/register');
 const config = require('config');
 const { notificationRoles } = require('./data');
 const chalk = require('chalk');
+const { getTwitchInfo } = require('../twitch/twitch');
+const { getYoutubeInfo } = require('../youtube/youtube');
 
 const prefix = config.get('DiscordPrefix');
 
@@ -19,13 +21,13 @@ module.exports = function () {
     }, 1000);
 
     if (command === 'youtube') {
-      if (args[0].toLowerCase() === 'add') {
+      if (args.length === 2 && args[0].toLowerCase() === 'add') {
         message
           .reply('Added Youtube Channel Notifications!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
         ytRegister(args[1], message.channel.id);
       }
-      if (args[0].toLowerCase() === 'del') {
+      if (args.length === 2 && args[0].toLowerCase() === 'del') {
         message
           .reply('Removed Youtube Channel Notifications!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
@@ -36,13 +38,13 @@ module.exports = function () {
         }
       }
     } else if (command === 'twitch') {
-      if (args[0].toLowerCase() === 'add') {
+      if (args.length === 2 && args[0].toLowerCase() === 'add') {
         message
           .reply('Added Twitch Channel Notifications!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
         twitchRegister(args[1], message.channel.id);
       }
-      if (args[0].toLowerCase() === 'del') {
+      if (args.length === 2 && args[0].toLowerCase() === 'del') {
         message
           .reply('Removed Twitch Channel Notifications!')
           .then((msg) => setTimeout(() => msg.delete(), 5000));
@@ -53,7 +55,7 @@ module.exports = function () {
         }
       }
     } else if (command === 'role') {
-      if (args[0].toLowerCase() === 'add') {
+      if (args.length === 2 && args[0].toLowerCase() === 'add') {
         if (
           notificationRoles.some((val) => val.channel === message.channel.id)
         ) {
@@ -72,7 +74,7 @@ module.exports = function () {
           .then((msg) => setTimeout(() => msg.delete(), 5000));
         notificationRoles.push({ role: args[1], channel: message.channel.id });
       }
-      if (args[0].toLowerCase() === 'del') {
+      if (args.length === 1 && args[0].toLowerCase() === 'del') {
         if (
           !notificationRoles.some((val) => val.channel === message.channel.id)
         ) {
@@ -95,6 +97,26 @@ module.exports = function () {
             `[Info] Notification Role Removed: Channel(${message.channel.id})`
           )
         );
+      }
+    } else if (args.length === 1 && command === 'list') {
+      if (args[0].toLowerCase() === 'twitch') {
+        const info = getTwitchInfo(message.channel.id).reduce((acc, elm) => {
+          acc.push(elm.username);
+          return acc;
+        }, []);
+        console.log(info);
+        message
+          .reply(info.join(' : '))
+          .then((msg) => setTimeout(() => msg.delete(), 10000));
+      } else if (args[0].toLowerCase() === 'youtube') {
+        const info = getYoutubeInfo(message.channel.id).reduce((acc, elm) => {
+          acc.push(elm.clannelId);
+          return acc;
+        }, []);
+        console.log(info);
+        message
+          .reply(info.join(' : '))
+          .then((msg) => setTimeout(() => msg.delete(), 10000));
       }
     }
   });

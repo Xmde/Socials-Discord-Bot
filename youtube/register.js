@@ -1,5 +1,5 @@
 const config = require('config');
-const { channels } = require('./init');
+const { channels } = require('./youtube');
 const { pubSubSubscriber } = require('./pubSubSubscriber');
 const chalk = require('chalk');
 

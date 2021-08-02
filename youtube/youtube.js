@@ -11,6 +11,10 @@ exports.channels = channels;
 
 let lastId;
 
+exports.getYoutubeInfo = function (discordChannelId) {
+  return channels.filter((elm) => elm.discordChannelId === discordChannelId);
+};
+
 exports.init = function () {
   pubSubSubscriber.listen(1337);
 
