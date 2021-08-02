@@ -20,7 +20,7 @@ exports.init = function () {
   pubSubSubscriber.listen(
     config
       .get('CallBackUrl')
-      .substring(config.get('CallBackUrl').indexOf(':') + 1)
+      .substring(config.get('CallBackUrl').indexOf(':', 7) + 1)
   );
 
   pubSubSubscriber.on('feed', (data) => {
