@@ -104,7 +104,6 @@ module.exports = function () {
           acc.push(elm.username);
           return acc;
         }, []);
-        console.log(info);
         message
           .reply(info.join(' : '))
           .then((msg) => setTimeout(() => msg.delete(), 10000));
@@ -113,7 +112,6 @@ module.exports = function () {
           acc.push(elm.clannelId);
           return acc;
         }, []);
-        console.log(info);
         message
           .reply(info.join(' : '))
           .then((msg) => setTimeout(() => msg.delete(), 10000));
