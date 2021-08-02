@@ -42,4 +42,5 @@ exports.init = function () {
       register(channel.channelId, channel.discordChannelId);
     }
   }, 1000 * 60 * 60 * 24 * 2);
+  console.log(chalk.gray(`[Info] Youtube Service Initialized`));
 };

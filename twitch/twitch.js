@@ -44,4 +44,5 @@ exports.init = function () {
       }
     }
   }, 60000);
+  console.log(chalk.gray(`[Info] Twitch Service Initialized`));
 };
