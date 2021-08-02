@@ -3,7 +3,6 @@
   "TwitchClientSecret": "",
   "TwitchClientId": "",
   "BotToken": "",
-  "YTChannels": "./channels/youtube.txt",
-  "TwitchChannels": "./channels/twitch.txt",
-  "DiscordPrefix": "!"
+  "DiscordPrefix": "!",
+  "CallBackUrl": ""
 }
