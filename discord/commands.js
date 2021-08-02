@@ -24,7 +24,7 @@ module.exports = function () {
       message
         .reply('You do not have permission to perform this command!')
         .then((msg) => setTimeout(() => msg.delete(), 5000));
-      break;
+      return;
     }
 
     if (command === 'youtube') {
