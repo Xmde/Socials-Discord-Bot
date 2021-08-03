@@ -2,5 +2,6 @@
   "YTAPIKey": "XMSocials_ytApiKey",
   "BotToken": "XMSocials_botToken",
   "TwitchClientSecret": "XMSocials_twitchClientSec",
-  "TwitchClientId": "XMSocials_twitchClientId"
+  "TwitchClientId": "XMSocials_twitchClientId",
+  "CallBackUrl": "XMSocials_callBackUrl"
 }

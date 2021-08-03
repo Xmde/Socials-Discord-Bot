@@ -1,8 +1,7 @@
-require('./util/logging')();
-const client = require('./discord/client');
-client.on('ready', () => {
-  require('./events/youtube')();
-  require('./events/twitch')();
-  require('./apiHandle/youtube').ytChecker();
-  require('./apiHandle/twitch').twitchChecker();
-});
+require('./startup/logging')();
+
+require('./startup/dbinit')();
+
+require('./discord/init')();
+require('./youtube/youtube').init();
+require('./twitch/twitch').init();
