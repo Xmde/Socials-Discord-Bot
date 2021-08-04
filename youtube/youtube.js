@@ -8,6 +8,7 @@ const convert = require('xml-js');
 const chalk = require('chalk');
 const config = require('config');
 const db = require('../startup/db');
+const { ytRegister } = require('./register');
 
 let lastId;
 
@@ -47,7 +48,7 @@ exports.init = function () {
     for (let i = 0; i < channels.length; i++) {
       let channel = db.getData('/youtube/channels[-1]');
       db.delete('/youtube/channels[-1]');
-      register(channel.channelId, channel.discordChannelId);
+      ytRegister(channel.channelId, channel.discordChannelId);
     }
   }, 1000 * 60 * 60 * 24 * 2);
   console.log(chalk.gray(`[Info] Youtube Service Initialized`));
