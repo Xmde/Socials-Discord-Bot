@@ -3,6 +3,6 @@
   "TwitchClientSecret": "",
   "TwitchClientId": "",
   "BotToken": "",
-  "DiscordPrefix": "!",
+  "DiscordPrefix": "?",
   "CallBackUrl": ""
 }
