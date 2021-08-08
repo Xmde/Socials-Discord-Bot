@@ -29,17 +29,25 @@ exports.init = function () {
     if (streams.length === 0) return;
     for (let stream of streams) {
       let index = channels.findIndex(
-        (val) => val.username === stream.user_name
+        (val) => val.username === stream.user_login
       );
+      if (index === -1) {
+        console.log(
+          chalk.magenta('[Twitch] ') +
+            chalk.red(
+              `[ERROR] No Channel found with login name ${channels[index].username}!`
+            )
+        );
+      }
       if (channels[index].lastStream !== stream.id) {
         db.push(`/twitch/channels[${index}]/lastStream`, stream.id, true);
         console.log(
           chalk.magenta(
-            `[Twitch] Found new stream: ID(${stream.id}), Username(${stream.user_name})`
+            `[Twitch] Found new stream: ID(${stream.id}), Username(${stream.user_login})`
           )
         );
         for (let discordc of discordChannels) {
-          if (discordc.username === stream.user_name) {
+          if (discordc.username === stream.user_login) {
             sendNotif(stream, discordc.discordChannelId);
           }
         }
