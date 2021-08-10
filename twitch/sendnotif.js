@@ -22,11 +22,27 @@ module.exports = async function (stream, discordChannelId) {
   const channel = client.channels.cache.get(discordChannelId);
   const notificationRoles = db.getData('/discord/notificationRoles');
   if (notificationRoles.some((val) => val.channel === channel.id)) {
-    channel.send(
+    let sent = await channel.send(
       `${notificationRoles.find((val) => val.channel === channel.id).role}`,
       notif
     );
+    db.push(
+      '/twitch/streamNotifs[]',
+      {
+        streamId: stream.id,
+        message: sent,
+      },
+      true
+    );
   } else {
-    channel.send(notif);
+    let sent = await channel.send(notif);
+    db.push(
+      '/twitch/streamNotifs[]',
+      {
+        streamId: stream.id,
+        message: sent,
+      },
+      true
+    );
   }
 };

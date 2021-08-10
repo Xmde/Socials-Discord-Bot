@@ -12,4 +12,7 @@ module.exports = function () {
 
   db.push('/discord/notificationRoles[]', { obj: 'test' }, true);
   db.delete('/discord/notificationRoles[-1]');
+
+  db.push('/twitch/streamNotifs[]', { obj: 'test' }, true);
+  db.delete('/twitch/streamNotifs[-1]');
 };

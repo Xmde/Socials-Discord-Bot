@@ -1,10 +1,5 @@
 node_modules/
-<<<<<<< HEAD
 .VSCodeCounter/
 config/development.json
 uncaughtExceptions.log
 database.json
-=======
-logs/
-config/test.json
->>>>>>> master
